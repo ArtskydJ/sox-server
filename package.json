@@ -1,0 +1,35 @@
+{
+  "name": "sox-server",
+  "version": "0.0.1",
+  "description": "A server that runs sox to convert audio files to a specified type",
+  "main": "server.js",
+  "browser": "client.js",
+  "scripts": {
+    "test": "node server.js | browserify test/client-test.js -t brfs | smokestack -b firefox",
+    "test2": "node test/client-test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ArtskydJ/sox-server.git"
+  },
+  "author": "Joseph Dykstra",
+  "license": "VOL",
+  "bugs": {
+    "url": "https://github.com/ArtskydJ/sox-server/issues"
+  },
+  "homepage": "https://github.com/ArtskydJ/sox-server",
+  "dependencies": {
+    "async-each": "^0.1.6",
+    "busboy": "^0.2.11",
+    "create-temp-file": "^1.0.0",
+    "sox-stream": "^1.0.2"
+  },
+  "devDependencies": {
+    "brfs": "^1.4.0",
+    "browserify": "^10.2.6",
+    "smokestack": "^3.3.0",
+    "tape": "^4.0.0",
+    "test-audio": "^1.0.0",
+    "watchify": "^3.2.3"
+  }
+}
