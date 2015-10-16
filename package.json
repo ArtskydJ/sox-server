@@ -5,8 +5,8 @@
   "main": "server.js",
   "browser": "client.js",
   "scripts": {
-    "test": "node server.js | browserify test/client-test.js -t brfs | smokestack -b firefox",
-    "test2": "node test/client-test.js"
+    "test": "node test/client-test.js",
+    "test2": "node server.js | browserify test/client-test.js -t brfs | smokestack -b firefox"
   },
   "repository": {
     "type": "git",
@@ -22,7 +22,8 @@
     "async-each": "^0.1.6",
     "busboy": "^0.2.11",
     "create-temp-file": "^1.0.0",
-    "sox-stream": "^1.0.2"
+    "sox-stream": "^1.0.2",
+    "superagent": "^1.4.0"
   },
   "devDependencies": {
     "brfs": "^1.4.0",
