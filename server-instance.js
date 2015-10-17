@@ -1,7 +1,7 @@
 var EventEmitter = require('events').EventEmitter
 var Sox = require('sox-stream')
 var Busboy = require('busboy')
-var createTempFile = require('create-temp-file')
+// var createTempFile = require('create-temp-file')
 
 module.exports = function Instance() {
 	var emitter = new EventEmitter()
@@ -17,14 +17,14 @@ function onRequest(emitter, req, res) {
 	function onFinish() {
 		// This function is called too many places. Wrap it with `after`?
 		// This function is called on convert and not convert... WAT
+		// Should return an error if it does not need to be converted
 		res.writeHead(200, { 'Connection': 'close' })
 		res.end()
 	}
 
 	busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
-		var alreadyMp3 = fieldname.slice(-4) === '.mp3'
 		// Should pipe to a temp file...
-		if (alreadyMp3) {
+		if (mimetype === 'audio/mp3') { // already an mp3
 			onFinish()
 		} else {
 			var convert = Sox({ type: 'mp3' })
