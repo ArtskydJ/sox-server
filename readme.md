@@ -20,10 +20,8 @@ server.listen(8080)
 *client.js*
 
 ```js
-var client = require('sox-server')
+var upload = require('sox-server')
 var dragDrop = require('drag-drop')
-
-var upload = client()
 
 dragDrop('body', function (files) {
 	upload(files, function (err, responses) {
@@ -55,19 +53,15 @@ var casa = require('sox-server')
 Written for use with [browserify](https://github.com/substack/node-browserify).
 
 ```js
-var client = require('sox-server')
+var upload = require('sox-server')
 ```
-
-## `var upload = client([fileValidator])`
-
-`fileValidator(file)` is a function that given a file returns whether the file is valid. By default all files will be allowed.
 
 ### `upload(files, [cb])`
 
 - `files` is a file or an array of files.
-- `cb(err, infoHashes)`
+- `cb(err, responses)`
 	- `err` is null or an Error object
-	- `responses` is an array of responses. If you uploaded one file, it is an array of one response.
+	- `responses` is a response or an array of responses. If you upload one file, it is one response.
 
 
 # install

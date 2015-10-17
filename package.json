@@ -30,7 +30,6 @@
     "browserify": "^10.2.6",
     "smokestack": "^3.3.0",
     "tape": "^4.0.0",
-    "test-audio": "^1.0.0",
-    "watchify": "^3.2.3"
+    "test-audio": "^2.0.0"
   }
 }
