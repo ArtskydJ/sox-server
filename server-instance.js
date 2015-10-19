@@ -23,6 +23,7 @@ function onRequest(emitter, req, res) {
 	}
 
 	busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
+		
 		// Should pipe to a temp file...
 		if (mimetype === 'audio/mp3') { // already an mp3
 			onFinish()
