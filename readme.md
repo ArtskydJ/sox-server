@@ -34,35 +34,39 @@ dragDrop('body', function (files) {
 # server api
 
 ```js
-var casa = require('sox-server')
+var server = require('sox-server')()
 ```
 
-## `var emitter = casa(server)`
+### `server`
 
-- `server` is an [`http.Server`](https://nodejs.org/api/http.html#http_class_http_server) instance. You have to call `server.listen()`.
-- `emitter` is an [`events.EventEmitter`](https://nodejs.org/api/events.html#events_class_events_eventemitter) instance. You can call `emitter.on`, if you want.
-
-## events
-
-- `error` (err)
-- `upload-request` (infoHash)
-- `new-bundle` (bundle)
+- `server` is an [`http.Server`](https://nodejs.org/api/http.html#http_class_http_server) instance. You have to call `server.listen(port)`.
 
 # browser api
 
 Written for use with [browserify](https://github.com/substack/node-browserify).
 
 ```js
-var upload = require('sox-server')
+var upload = require('sox-server')()
 ```
 
-### `upload(files, [cb])`
+### `upload(files)`
+
+`upload` is a function, as well as an event emitter.
 
 - `files` is a file or an array of files.
-- `cb(err, responses)`
-	- `err` is null or an Error object
-	- `responses` is a response or an array of responses. If you upload one file, it is one response.
 
+### events
+
+- `error(err)` - Emits an error that it got when trying to upload
+- `ready(file)` - Emits the successfully converted `file`, or the same `file` if it was valid
+
+```js
+upload.on('error', console.error.bind(console))
+
+upload.on('ready', function (file) {
+	console.log('yeah, converted another file!')
+})
+```
 
 # install
 

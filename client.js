@@ -1,21 +1,45 @@
 var each = require('async-each')
 var superagent = require('superagent')
+var path = require('path')
+var makeEmitter = require('make-object-an-emitter')
 
-var UPLOAD_URL = '/upload'
-if (typeof window === 'undefined') {
-	UPLOAD_URL = 'localhost:8080' + UPLOAD_URL
-}
+var inNode = typeof window === 'undefined'
+var UPLOAD_URL = inNode ? 'localhost:8080/upload' : '/upload'
 
-module.exports = function upload(files, cb) {
-	if (Array.isArray(files)) {
-		each(files, uploadFile, cb)
-	} else {
-		uploadFile(files, cb)
+module.exports = function () {
+	var upload = function (files) {
+		if (Array.isArray(files)) {
+			each(files, uploadFile)
+		} else {
+			uploadFile(files)
+		}
+		//return upload // Allow upload(files).on('error', console.error)
 	}
-}
+	makeEmitter(upload)
+	return upload
 
-function uploadFile(file, next) {
-	// file should be a blob in the browser, and a buffer in node
-	if (!file.name) throw new Error('Must supply a file name')
-	superagent.post(UPLOAD_URL).attach(file, file.name).end(next)
+	function uploadFile(file, next) {
+		if (inNode && !Buffer.isBuffer(file)) throw new Error('Expected file to be a buffer in node')
+		if (!inNode && file.size) throw new Error('Expected file to be a buffer in node')
+		if (!file.name) throw new Error('Must supply a file name')
+
+		var name = path.basename(file.name)
+
+		superagent.post(UPLOAD_URL)
+		//.type('multipart/form-data')
+		.type('form')
+		.attach(name, file)
+		.end(function (err, res) {
+			console.log('CLIENT FILE UPLOAD FINISHED = ' + !err)
+			if (err) {
+				upload.emit('error', err)
+			} else if (res.status === 200) {
+				upload.emit('ready', res.body)
+			} else {
+				upload.emit('ready', file)
+			}
+
+			if (next) next()
+		})
+	}
 }

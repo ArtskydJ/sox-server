@@ -1,12 +1,11 @@
 {
   "name": "sox-server",
-  "version": "0.0.1",
+  "version": "",
   "description": "A server that runs sox to convert audio files to a specified type",
   "main": "server.js",
   "browser": "client.js",
   "scripts": {
-    "test": "node test/client-test.js",
-    "test2": "node server.js | browserify test/client-test.js -t brfs | smokestack -b firefox"
+    "test": "node test/test.js"
   },
   "repository": {
     "type": "git",
@@ -22,12 +21,14 @@
     "async-each": "^0.1.6",
     "busboy": "^0.2.11",
     "create-temp-file": "^1.0.0",
+    "make-object-an-emitter": "^1.0.1",
     "sox-stream": "^1.0.2",
     "superagent": "^1.4.0"
   },
   "devDependencies": {
     "brfs": "^1.4.0",
     "browserify": "^10.2.6",
+    "size-stream": "^1.0.1",
     "smokestack": "^3.3.0",
     "tape": "^4.0.0",
     "test-audio": "^2.0.0"
