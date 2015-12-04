@@ -23,6 +23,7 @@
     "create-temp-file": "^1.0.0",
     "make-object-an-emitter": "^1.0.1",
     "sox-stream": "^1.0.2",
+    "sox.js": "^1.0.3",
     "superagent": "^1.4.0"
   },
   "devDependencies": {

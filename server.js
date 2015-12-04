@@ -1,7 +1,7 @@
 var Sox = require('sox-stream')
 //var fs = require('fs')
 var Busboy = require('busboy')
-//var createTempFile = require('create-temp-file')
+var createTempFile = require('create-temp-file')
 var http = require('http')
 var url = require('url')
 
@@ -37,22 +37,30 @@ function onPost(req, res) {
 			fileStream.resume()
 		} else {
 			console.log('converting to mp3')
-			var convert = Sox({ type: 'mp3' })
-			//var tempFile = createTempFile('.mp3')
-			fileStream
-			.pipe(convert)
-			.pipe(res)
+			var initialType = mimetype.split('/').pop()
 
-			convert.on('error', console.error)
-			/*.pipe(tempFile)
-			.on('finish', function () {
+			var converted = fileStream.pipe(Sox([
+				{ type:  initialType },
+				{ type: 'mp3' }
+			]))
+			console.log(converted)
+
+			//var cachedFile = createTempFile('.mp3')
+
+			res.writeHead(200, {
+//				'Connection': 'close',
+				'Content-Type': 'audio/mp3'
+			})
+
+			//converted.pipe(cachedFile)
+			converted.pipe(res).on('finish', function () {
 				console.log('so for so supes')
-				res.writeHead(200, {
-					'Connection': 'close',
-					'Content-Type': 'audio/mp3'
-				})
-				fs.createReadStream(tempFile.path).pipe(res).on('finish', res.end.bind(res)) // automatic maybe
-			})//*/
+				//fs.createReadStream(tempFile.path).pipe(res).on('finish', res.end.bind(res)) // automatic maybe
+			})
+
+
+			converted.on('error', console.error)
+			//cachedFile.on('error', console.error)
 		}
 	})
 

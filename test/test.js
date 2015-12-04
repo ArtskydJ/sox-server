@@ -1,5 +1,6 @@
 var test = require('tape')
 var fs = require('fs')
+var cp = require('child_process')
 var sizeStream = require('size-stream')
 var files = require('test-audio')()
 var Server = require('../server.js')
@@ -14,7 +15,11 @@ test('ogg file', function (t) {
 		var fileBuffer = fs.readFileSync(filePath)
 		fileBuffer.name = filePath
 
-		upload(fileBuffer)
+		//upload(fileBuffer)
+		cp.spawn('curl', [
+			'localhost:8080/upload',
+			'-F', 'herpderp=@node_modules\\test-audio\\audio\\8000__cfork__cf-fx-bloibb.mp3'
+		])
 
 		upload.on('ready', function (file) {
 			var size = sizeStream()
