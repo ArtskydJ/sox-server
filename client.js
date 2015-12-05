@@ -28,13 +28,12 @@ module.exports = function () {
 		superagent.post(UPLOAD_URL)
 		//.type('multipart/form-data')
 		.type('form')
-		.attach(name, file)
+		.attach(name, file, file.name)
 		.end(function (err, res) {
-			console.log('CLIENT FILE UPLOAD FINISHED = ' + !err)
 			if (err) {
 				upload.emit('error', err)
 			} else if (res.status === 200) {
-				upload.emit('ready', res.body)
+				upload.emit('ready', res)
 			} else {
 				upload.emit('ready', file)
 			}

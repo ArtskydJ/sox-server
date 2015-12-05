@@ -27,8 +27,10 @@
     "superagent": "^1.4.0"
   },
   "devDependencies": {
+    "after": "^0.8.1",
     "brfs": "^1.4.0",
     "browserify": "^10.2.6",
+    "hasha": "^2.0.2",
     "size-stream": "^1.0.1",
     "smokestack": "^3.3.0",
     "tape": "^4.0.0",

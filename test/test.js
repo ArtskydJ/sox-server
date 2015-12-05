@@ -3,63 +3,75 @@ var fs = require('fs')
 var cp = require('child_process')
 var sizeStream = require('size-stream')
 var files = require('test-audio')()
+var hasha = require('hasha')
+var after = require('after')
 var Server = require('../server.js')
 var Upload = require('../client.js')
 
-test('ogg file using curl', function (t) {
-	var server = Server()
+var expectedMp3FileSize = [
+	1892,  // 30047__corsica-s__drippy.flac
+	50179, // 50775__smcameron__drips2.ogg
+	2507,  // 75344__neotone__drip2.wav
+	6006   // 8000__cfork__cf-fx-bloibb.mp3
+]
+var expectedMp3FileMd5s = [
+	'72cbe1ec103eee6dba4f0c2ecd022532', // 30047
+	'cbd234bb0baa13c6018ec87929690b1a', // 50775
+	'13d3fa49e665d4c70c24ef6f5731e1c0', // 75344
+	'f8165368cf2e5d5b1a8a07c12505661a'  // 8000
+]
 
-	server.listen(8080, function () {
+test('wav [using curl]', function (t) {
+	setupServer(t, 2, function (next) {
 		var filePath = files[2].path
 
-		var curl = cp.spawn('curl', [
-			'localhost:8080/upload',
-			'-F', 'lolwut=@' + filePath
-		])
+		var fileStream = cp.spawn('curl', [ 'localhost:8080/upload', '-F', 'lolwut=@' + filePath ]).stdout
 
-		var size = sizeStream()
-		size.once('size', function (bytes) {
-			t.ok(bytes > 5600 && bytes < 6100, '5600 > ' + bytes + ' > 6100') // this fails because it is looking at the expected size of converting the mp3 file
-
-			server.close()
-			t.end()
+		fileStream.pipe(sizeStream()).once('size', function (bytes) {
+			t.equal(expectedMp3FileSize[2], bytes)
+			next()
 		})
-
-		curl.stdout.pipe(size)
+		hasha.fromStream(fileStream, { algorithm: 'md5' }).then(function (md5) {
+			t.equal(expectedMp3FileMd5s[2], md5)
+			next()
+		})
 	})
 })
 
-test('ogg file using the client', function (t) {
-	var server = Server()
+test('wav [using client]', function (t) {
 	var upload = Upload()
 
-	server.listen(8080, function () {
+	setupServer(t, 2, function (next) {
 		var filePath = files[2].path
 		var fileBuffer = fs.readFileSync(filePath)
 		fileBuffer.name = filePath
 
 		upload(fileBuffer)
 
-		upload.on('ready', function (file) {
-			var size = sizeStream()
-			size.once('size', function (bytes) {
-				t.ok(bytes > 5600 && bytes < 6100, '5600 > ' + bytes + ' > 6100')
-
-				server.close()
-				t.end()
+		upload.on('ready', function (fileStream) {
+			fileStream.pipe(sizeStream()).once('size', function (bytes) {
+				t.equal(expectedMp3FileSize[2], bytes)
+				next()
 			})
-
-			file.pipe(size)
+			hasha.fromStream(fileStream, { algorithm: 'md5' }).then(function (md5) {
+				t.equal(expectedMp3FileMd5s[2], md5)
+				next()
+			})
 		})
 
 		upload.on('error', t.fail.bind(t))
 	})
 })
 
-/*
-Another way to test is to open 2 command prompt windows, and run these commands:
+function setupServer(t, afterN, cb) {
+	var server = Server()
 
-node server.js
+	var next = after(afterN, function () {
+		server.close()
+		t.end()
+	})
 
-curl localhost:80/upload -F "file=@node_modules/test-audio/audio/30047__corsica-s__drippy.flac"
-*/
+	server.listen(8080, function () {
+		cb(next)
+	})
+}
