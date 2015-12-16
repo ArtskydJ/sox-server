@@ -6,4 +6,4 @@ node_js:
 addons:
   apt:
     packages:
-	- sox
+      - sox
