@@ -6,4 +6,5 @@ node_js:
 addons:
   apt:
     packages:
+      - libsox-fmt-mp3
       - sox
