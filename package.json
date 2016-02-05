@@ -34,6 +34,6 @@
     "size-stream": "^1.0.1",
     "smokestack": "^3.3.0",
     "tape": "^4.0.0",
-    "test-audio": "^2.0.0"
+    "test-audio": "^2.1.0"
   }
 }
