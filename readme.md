@@ -1,3 +1,7 @@
+I'm never going to work on this, so I added the `wontfix` label to the issues, and closed them.
+
+-----------
+
 sox-server
 ==========
 
